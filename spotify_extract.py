@@ -19,7 +19,7 @@ def playlist_loop(client, sp):
     i = 0
     while True:
         #Sleep for 10 seconds so we don't contiually scan sheet
-        sleep(10)
+        sleep(5)
         #Get the instance of the Spreadsheet
         sheet = client.open('PythonSongRequests')
         #Get the first sheet of the Spreadsheet
@@ -33,8 +33,8 @@ def playlist_loop(client, sp):
             song = records_data[i]['What song would you like to hear?']
             song = re.sub(f'( [Bb][Yy] )', ' - ', song)
             print(song)
-            add_queue(song, sp)
             i += 1
+            add_queue(song, sp)
             continue
             #If no new song, catch exception and continue through loop
         except IndexError:
@@ -44,6 +44,7 @@ def playlist_loop(client, sp):
 def add_queue(song, sp):
     song_data = sp.search(q=song, type='track', limit=1)
     uri = song_data['tracks']['items'][0]['uri']
+    print(uri)
     results = sp.add_to_queue(uri=uri)
     return
 
