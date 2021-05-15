@@ -52,8 +52,8 @@ if __name__ == "__main__":
     #Initalize google sheet to read from
     client = prepare_read()
     #Loop through requests ad infinitum
-    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id='ea88cb25fb5e464da7deacecdd1fac62',
-                                                client_secret="e27e622de78e46d5ba7b246485b18e13",
+    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id='',
+                                                client_secret='',
                                                 redirect_uri="https://github.com/",
                                                 scope="user-modify-playback-state"))
     playlist_loop(client, sp)

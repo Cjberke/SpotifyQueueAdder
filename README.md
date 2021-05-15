@@ -12,4 +12,4 @@ TODO<br/>
 <br/>
 
 ## Updates
-As of now, this script only functions with my API
+As of now, this script only functions with my API. Need to layout process for adding APIs?
