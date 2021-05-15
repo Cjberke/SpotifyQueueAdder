@@ -7,9 +7,10 @@ The user will intitalize a Google Form which funnels responses to a Google Sheet
 
 
 ## Process for Integration
-TODO<br/>
-<br/>
-<br/>
+  * TODO
+  * TODO
+  * TODOTODO
+  * TODOOOOOOOOOO
 
 ## Updates
-As of now, this script only functions with my API. Need to layout process for adding APIs?
+As of now, this script only functions with my API. Need to layout process for adding APIs & adding helpful GUI???
