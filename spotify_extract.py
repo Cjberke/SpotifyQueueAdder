@@ -10,7 +10,7 @@ def prepare_read():
     #Acknowledges scope of API
     scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
     # add credentials to the account
-    creds = ServiceAccountCredentials.from_json_keyfile_name('spotifyplaylistbuilder-8995015fdccd.json', scope)
+    creds = ServiceAccountCredentials.from_json_keyfile_name('spotifyplaylistbuilder-88db48f5cd5a.json', scope)
     # authorize the clientsheet
     client = gspread.authorize(creds)
     return client
@@ -52,7 +52,7 @@ if __name__ == "__main__":
     #Initalize google sheet to read from
     client = prepare_read()
     #Loop through requests ad infinitum
-    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id='',
+vvfit    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id='',
                                                 client_secret='',
                                                 redirect_uri="https://github.com/",
                                                 scope="user-modify-playback-state"))
