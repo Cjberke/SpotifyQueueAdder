@@ -19,3 +19,6 @@ class SpotAdder:
             keys = json.load(f)
         self.CLIENT_ID = keys['client_id']
         self.CLIENT_SECRET = keys['client_secret']
+    
+    def add_queue(self, song):
+        return

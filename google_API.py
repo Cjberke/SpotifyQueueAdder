@@ -5,6 +5,7 @@ class FormReader:
     SERVICE_ACCOUNT_FILE = 'google_keys.json'
     SCOPES = ['https://www.googleapis.com/auth/spreadsheets',
               'https://www.googleapis.com/auth/drive']
+    RANGE_BASE = 'Form Responses 1!'
     
     def __init__(self, spreadsheetID):
         self.SPREADSHEET_ID = spreadsheetID
@@ -18,7 +19,11 @@ class FormReader:
     def get_range(self, range_read):
         range = self.sheet.values().get(spreadsheetId=self.SPREADSHEET_ID, 
                                              range=range_read).execute()
-        return(range['values'])
+        if 'values' not in range:
+            list_vals = [['No new value']]
+        else:
+            list_vals = range['values']
+        return(list_vals)
 
 
 
