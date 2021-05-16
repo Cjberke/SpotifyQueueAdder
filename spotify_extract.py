@@ -1,19 +1,25 @@
 # importing the required libraries
-import gspread
-from oauth2client.service_account import ServiceAccountCredentials
 from time import sleep, time
+from google_API import FormReader
 import re
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
+import json
 
-def prepare_read():
-    #Acknowledges scope of API
-    scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
-    # add credentials to the account
-    creds = ServiceAccountCredentials.from_json_keyfile_name('spotifyplaylistbuilder-88db48f5cd5a.json', scope)
-    # authorize the clientsheet
-    client = gspread.authorize(creds)
-    return client
+SPOT_API_KEYS = 'keys.json'
+
+def prepare_read(sheet_ID):
+    song_form = FormReader(sheet_ID)
+    song_form.start_service()
+    
+    return(song_form)
+
+def spot_read():
+    with open(SPOT_API_KEYS) as f:
+        keys = json.load(f)
+    CLIENT_ID = keys['client_id']
+    CLIENT_SECRET = keys['client_secret']
+    return CLIENT_ID, CLIENT_SECRET
 
 def playlist_loop(client, sp):
     i = 0
@@ -50,10 +56,12 @@ def add_queue(song, sp):
 
 if __name__ == "__main__":
     #Initalize google sheet to read from
-    client = prepare_read()
+    sheet_ID = input("Input google sheet ID: ")
+    song_form = prepare_read(sheet_ID)
+    CLIENT_ID, CLIENT_SECRET = spot_read()
     #Loop through requests ad infinitum
-vvfit    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id='',
-                                                client_secret='',
+    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=CLIENT_ID,
+                                                client_secret=CLIENT_SECRET,
                                                 redirect_uri="https://github.com/",
                                                 scope="user-modify-playback-state"))
-    playlist_loop(client, sp)
+    #playlist_loop(sheet, sp)
