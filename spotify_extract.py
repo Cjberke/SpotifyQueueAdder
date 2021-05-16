@@ -1,25 +1,14 @@
 # importing the required libraries
-from time import sleep, time
+from time import sleep
 from google_API import FormReader
+from spotify_API import SpotAdder
 import re
-import spotipy
-from spotipy.oauth2 import SpotifyOAuth
-import json
-
-SPOT_API_KEYS = 'keys.json'
 
 def prepare_read(sheet_ID):
     song_form = FormReader(sheet_ID)
     song_form.start_service()
     
     return(song_form)
-
-def spot_read():
-    with open(SPOT_API_KEYS) as f:
-        keys = json.load(f)
-    CLIENT_ID = keys['client_id']
-    CLIENT_SECRET = keys['client_secret']
-    return CLIENT_ID, CLIENT_SECRET
 
 def playlist_loop(client, sp):
     i = 0
@@ -55,13 +44,12 @@ def add_queue(song, sp):
     return
 
 if __name__ == "__main__":
-    #Initalize google sheet to read from
+    
+    #Initalize google sheet to read from w/ FormReader Object
     sheet_ID = input("Input google sheet ID: ")
     song_form = prepare_read(sheet_ID)
-    CLIENT_ID, CLIENT_SECRET = spot_read()
+    
     #Loop through requests ad infinitum
-    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=CLIENT_ID,
-                                                client_secret=CLIENT_SECRET,
-                                                redirect_uri="https://github.com/",
-                                                scope="user-modify-playback-state"))
-    #playlist_loop(sheet, sp)
+    spot_queue = SpotAdder()
+    print(spot_queue.CLIENT_ID)
+    #playlist_loop(song_form, spot_queue)
