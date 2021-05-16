@@ -13,7 +13,8 @@ def prepare_read(sheet_ID):
 def playlist_loop(song_form, spot_queue):
     #i == 1: column title
     #i == 2: first song request
-    i = 54
+    spot_queue.check_devices()
+    i = 2
     while True:
         #Sleep so sheet isn't scanned contiually
         sleep(5)
@@ -25,15 +26,8 @@ def playlist_loop(song_form, spot_queue):
             print('No new song requests')
         else:
             song = re.sub(f'( [Bb][Yy] )', ' - ', song)
-            print(song)
+            spot_queue.add_queue(song)
             i += 1
-
-def add_queue(song, sp):
-    song_data = sp.search(q=song, type='track', limit=1)
-    uri = song_data['tracks']['items'][0]['uri']
-    print(uri)
-    results = sp.add_to_queue(uri=uri)
-    return
 
 if __name__ == "__main__":
     
