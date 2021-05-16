@@ -1,8 +1,11 @@
 # importing the required libraries
 from time import sleep
+import sys
 from google_API import FormReader
 from spotify_API import SpotAdder
 import re
+
+SLEEP_TIME = 30
 
 def prepare_read(sheet_ID):
     song_form = FormReader(sheet_ID)
@@ -11,26 +14,39 @@ def prepare_read(sheet_ID):
     return(song_form)
 
 def playlist_loop(song_form, spot_queue):
-    #i == 1: column title
-    #i == 2: first song request
+    #Check if there is an active device before continuing
     spot_queue.check_devices()
-    i = 2
+    
+    #song_ind == 1: column title
+    #song_ind == 2: first song request
+    song_ind = 2
+    
+    #Loop and scan for song requets
     while True:
         #Sleep so sheet isn't scanned contiually
-        sleep(5)
+        sleep(SLEEP_TIME)
         
         #Check if new song requested
-        song = song_form.get_range(FormReader.RANGE_BASE + 'B' + str(i))[0][0]
+        req_song = song_form.get_range(FormReader.RANGE_BASE + 'B' + str(song_ind))[0][0]
         
-        if song == 'No new value':
+        if req_song == 'No new value':
             print('No new song requests')
         else:
             song = re.sub(f'( [Bb][Yy] )', ' - ', song)
             spot_queue.add_queue(song)
-            i += 1
+            song_ind += 1
 
 if __name__ == "__main__":
     
+    '''
+    Check desired use mode
+    -sys.argv[1] == 'Debug': shortens sleep timer for quicker scans of Google Sheet
+                             otherwise set timer to normal 30 seconds
+    '''
+    if len(sys.argv) > 1:
+        SLEEP_TIME = 5 if sys.argv[1] == 'Debug' else 30
+        print('Sleep time between sheet scans: {} seconds'.format(SLEEP_TIME))
+        
     #Initalize FormReader
     sheet_ID = input("Input google sheet ID: ")
     song_form = prepare_read(sheet_ID)
