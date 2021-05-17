@@ -1,4 +1,3 @@
-# importing the required libraries
 from time import sleep
 import sys
 from google_API import FormReader

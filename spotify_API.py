@@ -3,7 +3,7 @@ from spotipy.oauth2 import SpotifyOAuth
 import json
 
 class SpotAdder:
-    SPOT_API_KEYS = 'keys.json'
+    SPOT_API_KEYS = 'spotify_keys.json'
     SPOT_API_REDIRECT_URI = 'https://github.com/'
     SPOT_API_SCOPE = 'user-modify-playback-state user-read-playback-state'
     

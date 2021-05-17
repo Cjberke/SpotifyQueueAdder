@@ -127,6 +127,5 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-keys.json
-testing_google.py
 google_keys.json
+spotify_keys.json
