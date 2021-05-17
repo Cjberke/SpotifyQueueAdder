@@ -17,6 +17,13 @@ def playlist_loop(song_form, spot_queue):
     #Check if there is an active device before continuing
     spot_queue.check_devices()
     
+    #Check where to start in sheet
+    spot_queue.check_start(song_form)
+    if spot_queue.song_ind > 2:
+        print('\nStarting after song {}\n'.format(spot_queue.song_ind - 1))
+    else:
+        print('\nStarting at the top!\n')
+    
     #Loop and scan for song requets
     while True:
         #Sleep so sheet isn't scanned contiually
@@ -42,10 +49,10 @@ if __name__ == "__main__":
     '''
     if len(sys.argv) > 1:
         SLEEP_TIME = 5 if sys.argv[1] == 'Debug' else 30
-        print('Sleep time between sheet scans: {} seconds'.format(SLEEP_TIME))
+        print('\nSleep time between sheet scans: {} seconds'.format(SLEEP_TIME))
         
     #Initalize FormReader
-    sheet_ID = input("Input google sheet ID: ")
+    sheet_ID = input("\nInput google sheet ID: ")
     song_form = prepare_read(sheet_ID)
     
     #Initalize SpotAdder

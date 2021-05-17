@@ -45,3 +45,11 @@ class SpotAdder:
             raise SystemExit("\nNo active devices on Spotify account. \nPlease start playing music on account to allow proper addition of songs to queue.")
         else:
             print("\nActive device detected, continuing\n")
+            
+    def check_start(self, song_form):
+        while True:
+            status = song_form.get_range(song_form.RANGE_BASE + 'C' + str(self.song_ind))[0][0]
+            if status == 'Checked' or status == 'Skipped':
+                self.song_ind += 1
+            else:
+                break
