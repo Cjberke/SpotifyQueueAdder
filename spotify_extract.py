@@ -17,24 +17,21 @@ def playlist_loop(song_form, spot_queue):
     #Check if there is an active device before continuing
     spot_queue.check_devices()
     
-    #song_ind == 1: column title
-    #song_ind == 2: first song request
-    song_ind = 2
-    
     #Loop and scan for song requets
     while True:
         #Sleep so sheet isn't scanned contiually
         sleep(SLEEP_TIME)
         
         #Check if new song requested
-        req_song = song_form.get_range(FormReader.RANGE_BASE + 'B' + str(song_ind))[0][0]
+        req_song = song_form.get_range(FormReader.RANGE_BASE + 'B' + str(spot_queue.song_ind))[0][0]
         
         if req_song == 'No new value':
             print('No new song requests')
         else:
-            song = re.sub(f'( [Bb][Yy] )', ' - ', song)
-            spot_queue.add_queue(song)
-            song_ind += 1
+            #Some regex to replace 'By' with '-', Spotify struggles with 'By' for some reason
+            song = re.sub(f'( [Bb][Yy] )', ' - ', req_song)
+            spot_queue.add_queue(song, song_form)
+            spot_queue.song_ind += 1
 
 if __name__ == "__main__":
     

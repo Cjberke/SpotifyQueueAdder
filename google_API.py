@@ -24,7 +24,11 @@ class FormReader:
         else:
             list_vals = range['values']
         return(list_vals)
-
+    
+    def write_range(self, write_range, val):
+        self.sheet.values().update(
+            spreadsheetId=self.SPREADSHEET_ID, range=FormReader.RANGE_BASE + write_range,
+            valueInputOption="USER_ENTERED", body={'values':val}).execute()
 
 
 if __name__ == '__main__':
