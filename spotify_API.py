@@ -7,13 +7,14 @@ class SpotAdder:
     SPOT_API_REDIRECT_URI = 'https://github.com/'
     SPOT_API_SCOPE = 'user-modify-playback-state user-read-playback-state'
     
-    def __init__(self):
+    def __init__(self, playlist=None):
         self.key_read()
         self.sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=self.CLIENT_ID,
                                                             client_secret=self.CLIENT_SECRET,
                                                             redirect_uri=SpotAdder.SPOT_API_REDIRECT_URI,
                                                             scope=SpotAdder.SPOT_API_SCOPE))
         self.song_ind = 2
+        self.playlist = playlist
     
     def key_read(self):
         with open(SpotAdder.SPOT_API_KEYS) as f:
@@ -35,6 +36,10 @@ class SpotAdder:
             print("\nCouldn't find song '{}', skipping".format(song))
             status = 'Skipped'
         self.check_song(song_form, status)
+    
+    def add_playlist(self, song_form, status):
+        #TODO: Add option to build into playlist instead of Queue
+        pass
     
     def check_song(self, song_form, status):
         song_ind_check = 'C' + str(self.song_ind)

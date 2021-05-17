@@ -30,7 +30,6 @@ class FormReader:
             spreadsheetId=self.SPREADSHEET_ID, range=FormReader.RANGE_BASE + write_range,
             valueInputOption="USER_ENTERED", body={'values':val}).execute()
 
-
 if __name__ == '__main__':
     test = FormReader('17TFMRl9K5FDr3AoIkBs_d7A-mvqkipG0vtnbhlCXwFY')
     test.start_service()
