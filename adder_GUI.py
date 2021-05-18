@@ -1,5 +1,7 @@
 from tkinter import *
 from PIL import ImageTk, Image
+import threading
+from spotify_extract import *
 
 class GUI:
     
@@ -42,13 +44,15 @@ class GUI:
     def test_func(self):
         self.build_label = Label(self.root, text="Building...")
         self.build_label.grid(column=1,row=1)
+        threading.Thread(target=begin, daemon=True).start()
         self.start_but['state'] = DISABLED
         
     def debug_time(self):
+        global SLEEP_TIME
         self.debug_but['state'] = DISABLED
         self.debug_label = Label(self.root, text="Sleep time between scans: 5 Second")
         self.debug_label.grid(column=0,row=1)
-        #SLEEP_TIME = 5
+        SLEEP_TIME = 5
         
 
 if __name__ == '__main__':
