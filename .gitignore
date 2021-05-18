@@ -129,3 +129,5 @@ dmypy.json
 .pyre/
 google_keys.json
 spotify_keys.json
+lol.png
+examples_for_GUI.py
