@@ -3,60 +3,98 @@ from PIL import ImageTk, Image
 import threading
 from spotify_extract import *
 
+
 class GUI:
     
-    def __init__(self):
+    def __init__(self, song_comms):
         self.root = Tk()
-
+        #Testing with using a Queue
+        self.song_comms = song_comms
         #Make the App window
         self.root.geometry('720x480')
         self.root.iconbitmap('resources/maple_leaf.ico')
         self.root.title('SpotifyQueueAdder')
+        
+        #Make Start Button
+        self.start_frame = LabelFrame(self.root)
+        self.start_frame.grid(row=0,column=0,sticky=EW)
+        self.start_but = Button(self.start_frame, 
+                                   text='Click Here to Start Building', 
+                                   command=self.test_func, state=DISABLED)
+        self.start_but.pack(fill='both')
+        #self.start_label = Label(self.root, text='')
+        #self.start_label.grid(column=1,row=1)
     
         #Make Debug button
-        self.debug_frame = LabelFrame(self.root, padx=15,pady=15)
-        self.debug_frame.grid(column=0,row=0)
+        self.debug_frame = LabelFrame(self.root)
+        self.debug_frame.grid(column=1,row=0,sticky=EW)
         self.debug_but = Button(self.debug_frame, 
                                    text='Click here to set DEBUG mode', 
                                    command=self.debug_time)     
-        self.debug_but.pack()  
-    
-        #Make Start Button
-        self.start_frame = LabelFrame(self.root, padx=25,pady=25)
-        self.start_frame.grid(column=1,row=0)
-        self.start_but = Button(self.start_frame, 
-                                   text='Click Here to Start Building', 
-                                   command=self.test_func)
-        self.start_but.pack()
-        self.start_label = Label(self.root, text='')
-        self.start_label.grid(column=1,row=1)
+        self.debug_but.pack(fill='both')
+        self.debug_label_frame = LabelFrame(self.root)
+        self.debug_label_frame.grid(column=1,row=1, sticky=EW)
+        self.debug_label = Label(self.debug_label_frame, text="Debug disabled, time bewteen scans: 30 Seconds")
+        self.debug_label.pack()
+        
+        #Debug Check Button
+        self.check_frame = LabelFrame(self.root)
+        self.check_frame.grid(column=0,row=2, sticky=EW)
+        self.check_but = Button(self.check_frame, 
+                                   text='Click here to enable Start', 
+                                   command=lambda:self.enable_but(self.start_but, self.debug_but))
+        self.check_but.grid(column=0,row=0,sticky=EW)
+        self.check_lab = Label(self.check_frame, 
+                               text='Doing so disables the ability for DEBUG mode',pady=10)
+        self.check_lab.grid(column=0,row=1)  
     
         #Make Exit Button
-        self.exit_frame = LabelFrame(self.root, padx=10,pady=10)
-        self.exit_frame.grid(column=0,row=2)
-        
+        self.exit_frame = LabelFrame(self.root)
+        self.exit_frame.grid(columnspan=2,sticky=EW)
         self.exit_button = Button(self.exit_frame, 
                                   text='Click Here to Exit', 
                                   command=self.root.quit)
-        self.exit_button.pack()
+        self.exit_button.pack(fill='both')
         self.root.mainloop()
     
     def test_func(self):
         self.build_label = Label(self.root, text="Building...")
-        self.build_label.grid(column=1,row=1)
-        threading.Thread(target=begin, daemon=True).start()
-        self.start_but['state'] = DISABLED
+        self.build_label.grid(column=0,row=1, sticky=EW)
+        threading.Thread(target=begin, args=(self.song_comms,) ,daemon=True).start()
+        self.disable_but(self.start_but)
         
     def debug_time(self):
         global SLEEP_TIME
-        self.debug_but['state'] = DISABLED
-        self.debug_label = Label(self.root, text="Sleep time between scans: 5 Second")
-        self.debug_label.grid(column=0,row=1)
-        SLEEP_TIME = 5
+        
+        self.disable_but(self.debug_but)
+        self.disable_but(self.check_but)
+        self.enable_but(self.start_but)
+        self.debug_label.destroy()
+        self.debug_label = Label(self.debug_label_frame, anchor=NW, justify=LEFT,text="Debug enabled, time bewteen scans: 5 Seconds")
+        self.debug_label.pack()
+        self.build_label = Label(self.root, text="Start is now enabled")
+        self.build_label.grid(column=0,row=1, sticky=EW)
+        self.send_queue('Set DEBUG')
+    
+    def disable_but(self, but):
+        if but['state'] == NORMAL or but['state'] == ACTIVE:
+            but['state'] = DISABLED
+    
+    def enable_but(self, but, dis = None):
+        if but['state'] == DISABLED:
+            but['state'] = NORMAL
+        if dis != None:
+            self.disable_but(dis)
+    
+    def send_queue(self,val):
+        song_comms.put(val)
+        
+    #def read_queue(self):
         
 
 if __name__ == '__main__':
-    test = GUI()
+    song_comms = Queue()
+    test = GUI(song_comms)
     
 
     
