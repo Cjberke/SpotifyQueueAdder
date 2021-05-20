@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter.scrolledtext import ScrolledText
 from PIL import ImageTk, Image
 import threading
 from spotify_extract import *
@@ -8,10 +9,11 @@ class GUI:
     
     def __init__(self, song_comms):
         self.root = Tk()
+        self.debug = False
         #Testing with using a Queue
         self.song_comms = song_comms
         #Make the App window
-        self.root.geometry('720x480')
+        #self.root.geometry('720x300')
         self.root.iconbitmap('resources/maple_leaf.ico')
         self.root.title('SpotifyQueueAdder')
         
@@ -58,6 +60,12 @@ class GUI:
         self.ID_lab.grid(column=1,row=2, sticky=EW)
         self.ID_but_lab = Label(self.root, text='')
         self.ID_but_lab.grid(column=1,row=3)
+        #############################################
+        
+        #Make Song List?
+        #############################################
+        self.song_list = ScrolledText(self.root,wrap=WORD,state=DISABLED)
+        self.song_list.grid(row=4,columnspan=2)
         
         #Make Exit Button
         #############################################
@@ -68,13 +76,17 @@ class GUI:
                                   command=self.root.quit)
         self.exit_button.pack(fill='both')
         self.root.after(func=self.read_queue(),ms=2000)
-        self.root.mainloop()
         #############################################
+        
+        #Open Window
+        ####################
+        self.root.mainloop()
+        ####################
         
     def start_func(self):
         self.build_label = Label(self.root, text="Building...")
         self.build_label.grid(column=0,row=1, sticky=EW)
-        threading.Thread(target=begin, args=(self.song_comms,) ,daemon=True).start()
+        threading.Thread(target=begin, args=(self.song_comms, self.debug) ,daemon=True).start()
         self.disable_but(self.start_but)
         
     def debug_time(self):
@@ -88,7 +100,7 @@ class GUI:
         self.debug_label.pack()
         self.build_label = Label(self.root, text="Start is now enabled")
         self.build_label.grid(column=0,row=1, sticky=EW)
-        self.send_queue('Set DEBUG')
+        self.debug = True
     
     def disable_but(self, but):
         if but['state'] == NORMAL or but['state'] == ACTIVE:
@@ -116,8 +128,11 @@ class GUI:
         if request == 'ID':
             self.get_ID()
         else:
-            pass
-    
+            self.song_list.configure(state='normal')
+            self.song_list.insert(END, request + '\n')
+            self.song_list.configure(state='disabled')
+            self.song_list.yview(END)
+             
     def get_ID(self):
         ent_ID = Entry(self.root,
             width=50,
@@ -128,6 +143,8 @@ class GUI:
                             command=lambda: self.send_queue(ent_ID.get()), 
                             fg='red', bg='white')
         ID_but.grid(column=1,row=3)
+        self.ID_but_lab.destroy()
+        self.ID_lab.destroy()
 
 if __name__ == '__main__':
     song_comms = Queue()

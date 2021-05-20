@@ -22,18 +22,18 @@ class SpotAdder:
         self.CLIENT_ID = keys['client_id']
         self.CLIENT_SECRET = keys['client_secret']
     
-    def add_queue(self, song, song_form):
+    def add_queue(self, song, song_form, song_comms):
         song_data = self.sp.search(q=song, type='track', limit=1)
         status = ''
         
         try:
             song_uri = song_data['tracks']['items'][0]['uri']
-            print('\n' + song + ':  ' + song_uri)
+            song_comms.put(song + ':  ' + song_uri)
             self.sp.add_to_queue(uri=song_uri)
             status = 'Added'
         
         except IndexError:
-            print("\nCouldn't find song '{}', skipping".format(song))
+            song_comms.put("\nCouldn't find song '{}', skipping".format(song))
             status = 'Skipped'
         self.check_song(song_form, status)
     
@@ -47,9 +47,9 @@ class SpotAdder:
          
     def check_devices(self):
         if self.sp.devices()['devices'] == []:
-            raise SystemExit("\nNo active devices on Spotify account. \nPlease start playing music on account to allow proper addition of songs to queue.")
+            return False
         else:
-            print("\nActive device detected, continuing\n")
+            return True
             
     def check_start(self, song_form):
         while True:
