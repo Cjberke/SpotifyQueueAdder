@@ -2,8 +2,8 @@ from time import sleep
 import sys
 from google_API import FormReader
 from spotify_API import SpotAdder
+from queue import *
 import re
-from queue import Queue, Empty
 
 SLEEP_TIME = 30
 
@@ -47,22 +47,30 @@ def begin(song_comms):
                              otherwise set timer to normal 30 seconds
     '''
     global SLEEP_TIME
+
+    try:
+        debug_check = song_comms.get_nowait()
+        if debug_check == 'Set DEBUG':
+            SLEEP_TIME = 5
+    except Empty:
+        pass
+
     #Initalize FormReader
-    sheet_ID = input("\nInput google sheet ID: ")
+    song_comms.put('ID')
+    while not song_comms.empty():
+        pass
+    
+    while True:
+        try:
+            sheet_ID = song_comms.get_nowait()
+            break
+        except Empty:
+            pass
     song_form = prepare_read(sheet_ID)
     
     #Initalize SpotAdder
     spot_queue = SpotAdder()
     
-    while True:
-        print(SLEEP_TIME)
-        try:
-            debug_check = song_comms.get_nowait()
-            if debug_check == 'Set DEBUG':
-                SLEEP_TIME = 5
-        except Empty:
-            pass
-        sleep(5)
-    
+    print(sheet_ID)
     #Loop for song requests
     #playlist_loop(song_form, spot_queue)

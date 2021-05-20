@@ -55,6 +55,7 @@ class GUI:
                                   text='Click Here to Exit', 
                                   command=self.root.quit)
         self.exit_button.pack(fill='both')
+        self.root.after(func=self.read_queue(),ms=2000)
         self.root.mainloop()
     
     def test_func(self):
@@ -87,10 +88,31 @@ class GUI:
             self.disable_but(dis)
     
     def send_queue(self,val):
-        song_comms.put(val)
+        self.song_comms.put(val)
         
-    #def read_queue(self):
-        
+    def read_queue(self):
+        try:
+            request = self.song_comms.get_nowait()
+            self.interp_request(request)
+        except Empty:
+            pass
+        self.root.after(func=self.read_queue,ms=2000)
+    
+    def interp_request(self, request):
+        if request == 'ID':
+            self.get_ID()
+        else:
+            pass
+    
+    def get_ID(self):
+        ent_ID = Entry(self.root,
+            width=50,
+            borderwidth=5)
+        ent_ID.grid(column=1,row=2, sticky=EW)
+        ID_but = Button(self.root, text="Submit ID",  
+                            command=lambda: self.send_queue(ent_ID.get()), 
+                            fg='red', bg='white')
+        ID_but.grid(column=1,row=3)
 
 if __name__ == '__main__':
     song_comms = Queue()
